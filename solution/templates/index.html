@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проверка погодных условий</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <script>
+        function addCityField() {
+            const container = document.getElementById('city-fields');
+            const inputGroup = document.createElement('div');
+            inputGroup.classList.add('form-group', 'fade-in');
+            inputGroup.innerHTML = `
+                <label>Промежуточный город:</label>
+                <input type="text" name="additional_cities" placeholder="Например, Ростов-на-Дону" required>
+                <button type="button" class="btn-remove" onclick="removeCityField(this)">Удалить</button>
+            `;
+            container.appendChild(inputGroup);
+        }
+
+        function removeCityField(button) {
+            const inputGroup = button.parentNode;
+            inputGroup.parentNode.removeChild(inputGroup);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Проверка погодных условий</h1>
+        <p>
+            Укажите начальный и конечный города, а также при необходимости добавьте промежуточные пункты.
+            Мы оценим погодные условия на маршруте с учётом ваших предпочтений к температуре.
+        </p>
+
+        <form action="{{ url_for('check_weather') }}" method="POST" class="weather-form">
+            <!-- Начальный город -->
+            <div class="form-group">
+                <label for="start_city">Начальный город:</label>
+                <input type="text" name="start_city" id="start_city" placeholder="Например, Москва" required>
+            </div>
+
+            <!-- Блок динамического добавления промежуточных городов -->
+            <div id="city-fields"></div>
+
+            <!-- Кнопка для добавления промежуточных городов -->
+            <button type="button" class="btn" onclick="addCityField()">Добавить промежуточный город</button>
+
+            <!-- Выбор режима погоды: «южный» или «северный» -->
+            <div class="form-group">
+                <label for="preference">Режим оценки погоды:</label>
+                <select name="preference" id="preference">
+                    <option value="southern">Южный (предпочтение тёплой погоды)</option>
+                    <option value="northern">Северный (предпочтение холодной погоды)</option>
+                </select>
+            </div>
+
+            <!-- Кнопка отправки формы -->
+            <button type="submit" class="btn btn-submit">Проверить погоду</button>
+        </form>
+    </div>
+</body>
+</html>
